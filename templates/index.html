@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم شبام - قائمة الطعام</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 3px #999;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            background-color: #128C7E;
+            color: white;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="شعار مطعم شبام" height="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#menu">القائمة</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">عن المطعم</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">تواصل معنا</a></li>
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link dark-mode-toggle" title="تبديل الوضع الليلي">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero-section text-white text-center">
+        <div class="overlay"></div>
+        <div class="container position-relative">
+            <img src="{{ url_for('static', filename='images/1.webp') }}" alt="مطعم شبام للمأكولات اليمنية" class="img-fluid mb-3" style="max-width: 300px;">
+            <h1 class="display-4 mb-3">{{ restaurant_info.name }}</h1>
+            <p class="lead mb-4">{{ restaurant_info.description }}</p>
+            <a href="#menu" class="btn btn-primary btn-lg">استكشف القائمة</a>
+        </div>
+    </header>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">قائمة الطعام</h2>
+            <div class="row">
+                {% for category in categories %}
+                <div class="col-md-3 mb-4" data-aos="fade-up">
+                    <div class="card category-card" data-category-id="{{ category[0] }}">
+                        <div class="card-body text-center">
+                            <i class="fas {{ category[2] }} fa-3x mb-3 text-primary"></i>
+                            <h5 class="card-title">{{ category[1] }}</h5>
+                            <p class="card-text">{{ category[2] }}</p>
+                            <div class="text-center">
+                                <a href="{{ url_for('view_category', category_id=category[0]) }}" class="btn btn-outline-primary">عرض القائمة</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6" data-aos="fade-left">
+                    <img src="{{ url_for('static', filename='img/restaurant.jpg') }}" class="img-fluid rounded" alt="مطعم شبام">
+                </div>
+                <div class="col-md-6" data-aos="fade-right">
+                    <h2 class="mb-4">عن مطعم شبام</h2>
+                    <p>{{ restaurant_info.description }}</p>
+                    <ul class="list-unstyled">
+                        <li><strong>العنوان:</strong> {{ restaurant_info.address }}</li>
+                        <li><strong>رقم الهاتف:</strong> {{ restaurant_info.phone }}</li>
+                        <li><strong>البريد الإلكتروني:</strong> {{ restaurant_info.email }}</li>
+                        <li><strong>ساعات العمل:</strong> {{ restaurant_info.working_hours }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">تواصل معنا</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="contact-info">
+                        <h3 class="mb-4">معلومات الاتصال</h3>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> {{ restaurant_info.address }}</p>
+                        <p><i class="fas fa-phone me-2"></i> {{ restaurant_info.phone }}</p>
+                        <p><i class="fas fa-envelope me-2"></i> {{ restaurant_info.email }}</p>
+                        <p><i class="fas fa-clock me-2"></i> {{ restaurant_info.working_hours }}</p>
+                        <div class="social-links mt-4">
+                            {% if restaurant_info.whatsapp_number %}
+                            <a href="https://wa.me/{{ restaurant_info.whatsapp_number }}" class="btn btn-outline-success me-2" target="_blank">
+                                <i class="fab fa-whatsapp"></i> واتساب
+                            </a>
+                            {% endif %}
+                            {% if restaurant_info.instagram %}
+                            <a href="{{ restaurant_info.instagram }}" class="btn btn-outline-danger me-2" target="_blank">
+                                <i class="fab fa-instagram"></i> انستغرام
+                            </a>
+                            {% endif %}
+                            {% if restaurant_info.snapchat %}
+                            <a href="{{ restaurant_info.snapchat }}" class="btn btn-outline-warning me-2" target="_blank">
+                                <i class="fab fa-snapchat"></i> سناب شات
+                            </a>
+                            {% endif %}
+                            {% if restaurant_info.tiktok %}
+                            <a href="{{ restaurant_info.tiktok }}" class="btn btn-outline-dark me-2" target="_blank">
+                                <i class="fab fa-tiktok"></i> تيك توك
+                            </a>
+                            {% endif %}
+                            {% if restaurant_info.facebook %}
+                            <a href="{{ restaurant_info.facebook }}" class="btn btn-outline-primary me-2" target="_blank">
+                                <i class="fab fa-facebook"></i> فيس بوك
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12041.110469289859!2d28.9373481!3d41.0203702!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9eb1c3e4d65%3A0x7c76ab3d8b92c0c8!2sEmin%20Ali%20Yasin%20Sokak%20No%3A11%2C%2034093%20Fatih%2F%C4%B0stanbul!5e0!3m2!1str!2str!4v1705860924227!5m2!1str!2str"
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p>&copy; 2025 مطعم شبام. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/{{ restaurant_info.whatsapp_number }}?text=مرحباً، أود طلب الطعام من مطعم شبام" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
